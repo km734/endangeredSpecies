@@ -1,0 +1,74 @@
+[
+	{
+		"Threat": "Residential/ Commercial",
+		"CR": 1010, 
+		"EN": 1564, 
+		"VU": 2156
+	},
+	{
+		"Threat": "Agriculture/ Aquaculture",
+		"CR": 1947, 
+		"EN": 2990, 
+		"VU": 3575
+	},
+	{
+		"Threat": "Energy Production/Mining",
+		"CR": 365, 
+		"EN": 528, 
+		"VU": 766
+	},
+	{
+		"Threat": "Transportation / Service Corridors",
+		"CR": 314, 
+		"EN": 456, 
+		"VU": 721
+	},
+	{
+		"Threat": "Biological Resource Use",
+		"CR": 1955, 
+		"EN": 2879, 
+		"VU": 4058
+	},
+	{
+		"Threat": "Human Intrusion",
+		"CR": 466, 
+		"EN": 519, 
+		"VU": 838
+	},
+	{
+		"Threat": "Natural System Modification",
+		"CR": 1132, 
+		"EN": 1465, 
+		"VU": 1799
+	},
+	{
+		"Threat": "Invasive Species",
+		"CR": 1390, 
+		"EN": 1109, 
+		"VU": 1396
+	},
+	{
+		"Threat": "Pollution",
+		"CR": 792, 
+		"EN": 987, 
+		"VU": 1551
+	},
+	{
+		"Threat": "Geological Events",
+		"CR": 164, 
+		"EN": 75, 
+		"VU": 91
+	},
+	{
+		"Threat": "Climate Change",
+		"CR": 716, 
+		"EN": 779, 
+		"VU": 1033
+	},
+	{
+		"Threat": "Other",
+		"CR": 39, 
+		"EN": 13, 
+		"VU": 25
+	}
+]

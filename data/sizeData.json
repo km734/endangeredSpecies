@@ -1,0 +1,12 @@
+{
+	"sizes" : {
+		"EX" : {"title" : "Extinct", "size": 868, "color":"#000000", "opacity": 0.7},
+		"EW" : {"title" : "Extinct in Wild", "size": 78, "color":"#111111", "opacity": 0.7},
+		"CR" : {"title" : "Critically Endangered", "size": 5176, "color":"#800026", "opacity": 1},
+		"EN" : {"title" : "Endangered", "size": 7705, "color":"#FC4E2A", "opacity": 1},
+		"VU" : {"title" : "Vulnerable", "size": 11654, "color":"#FD8D3C", "opacity": 1},
+		"NT" : {"title" : "Near Threatened", "size": 4406, "color":"#999922", "opacity": 0.7},
+		"LC" : {"title" : "Least Concern", "size": 36952, "color":"#22AA22", "opacity": 0.7},
+		"all" : {"title" : "All Species", "size": 82065, "color":"#22CC22", "opacity": 0.7}
+	}
+}

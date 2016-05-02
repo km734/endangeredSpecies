@@ -1,0 +1,111 @@
+[
+	{
+		"Habitat": "Wetlands",
+		"CR": 1266, 
+		"EN": 1699, 
+		"VU": 2288
+	},
+	{
+		"Habitat": "Grassland",
+		"CR": 301, 
+		"EN": 624, 
+		"VU": 677
+	},
+	{
+		"Habitat": "Caves",
+		"CR": 40, 
+		"EN": 41, 
+		"VU": 93
+	},
+	{
+		"Habitat": "Rockylands",
+		"CR": 346, 
+		"EN": 487, 
+		"VU": 602
+	},
+	{
+		"Habitat": "Forest",
+		"CR": 2133, 
+		"EN": 3534, 
+		"VU": 3672
+	},
+	{
+		"Habitat": "Shrublands",
+		"CR": 505, 
+		"EN": 890, 
+		"VU": 1052
+	},
+	{
+		"Habitat": "Savanna",
+		"CR": 84, 
+		"EN": 173, 
+		"VU": 259
+	},
+	{
+		"Habitat": "Neritic",
+		"CR": 118, 
+		"EN": 226, 
+		"VU": 610
+	},
+	{
+		"Habitat": "Deserts",
+		"CR": 57, 
+		"EN": 53, 
+		"VU": 74
+	},
+	{
+		"Habitat": "Unknown",
+		"CR": 42, 
+		"EN": 18, 
+		"VU": 31
+	},
+	{
+		"Habitat": "Other",
+		"CR": 32, 
+		"EN": 30, 
+		"VU": 29
+	},
+	{
+		"Habitat": "Introduced Vegetation",
+		"CR": 7, 
+		"EN": 10, 
+		"VU": 8
+	},
+	{
+		"Habitat": "Artificial Marine",
+		"CR": 60, 
+		"EN": 113, 
+		"VU": 112
+	},
+	{
+		"Habitat": "Artifical Terrestial",
+		"CR": 152, 
+		"EN": 414, 
+		"VU": 508
+	},
+	{
+		"Habitat": "Coastal",
+		"CR": 108, 
+		"EN": 161, 
+		"VU": 165
+	},
+	{
+		"Habitat": "Intertidal",
+		"CR": 55, 
+		"EN": 87, 
+		"VU": 157
+	},
+	{
+		"Habitat": "Deep Benthic",
+		"CR": 3, 
+		"EN": 8, 
+		"VU": 17
+	},
+	{
+		"Habitat": "Oceanic",
+		"CR": 57, 
+		"EN": 95, 
+		"VU": 152
+	}
+
+]
