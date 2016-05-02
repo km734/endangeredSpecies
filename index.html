@@ -1,0 +1,567 @@
+<html>
+<head>
+	<title>Biodiversity Dangers</title>
+
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<link href="http://fonts.googleapis.com/css?family=Lato:900,800,700,600,500,400,300,200,100" rel="stylesheet" type="text/css">
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+
+	<script src="data/countries.json" charset="utf-8"></script>
+	<script src="data/codes-iso.json" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+	
+	<div id="main">
+	
+	<h1>Biodiversity - Elephant in the room...</h1>
+	<!-- <h1>How much trouble are we in?</h1> -->
+	<p>Our Earth is the only planet in the Universe known to harbor life. Radiometric dating and other sources date the age of our Earth to be about 4.54 billion years. Over a period of four billion years, various species have come into existence on this planet - from simple life to complex organisms. Throughout history, millions of species have thrived and millions have gone extinct. Today, however, we are at the brink of upending the fragile biodiversity! </p>
+	<!-- Visualization 1 -->
+		<h2>
+			<b>How big</b> is the problem?
+		</h2>
+		<p>
+		<b style="color:white;">International Union for Conservation of Nature (IUCN) Red List </b> groups the species belonging to planet Earth into three broad categories - <b style="color:red">Extinct Species</b> [Extinct & Extinct in the Wild], <b style="color:orange">Threatened Species</b> [Critically Endangered, Endangered & Vulnerable] and <b style="color:#52D017">Species that are at Lower Risk</b> [Near Threatened, Conservation Dependent & Least Concern]. Shown below is the distribution of these species with respect to the overall species population
+		</p>
+		
+		<div id="vis1"></div>
+		<script>
+		var height1 = 300;
+		var width1 = 980;
+
+		var radiusScale = d3.scale.sqrt().domain([0,100000]).range([0,95]);
+
+		var svg1 = d3.select("#vis1").append("svg")
+		    .attr("width", width1)
+		    .attr("height", height1)
+		    .attr("class","container");
+
+	    svg1.append("text").text("")
+			.attr("x", 30)
+			.attr("y", 30)
+			.attr("class","title")
+			.style("fill","white");
+
+		var alternateSign = -1;
+		d3.json("data/sizeData.json", function(error, sizes) {
+			var sizes = sizes["sizes"]
+			var cumulativeWidth = -85;
+			for(var category in sizes) {
+				var scaledRadius = radiusScale(sizes[category]["size"]);
+				currentWidth = Math.max((scaledRadius*2)+15,100+(scaledRadius/2));
+				console.log(scaledRadius*2)
+				cumulativeWidth+=currentWidth;
+				console.log(cumulativeWidth);
+				svg1.append("circle").attr("r",scaledRadius)
+				.attr("cx", cumulativeWidth)
+				// .attr("cy", height1-scaledRadius-50)
+				.attr("cy", height1-110)
+				.style("fill",sizes[category]["color"])
+				.style("stroke","#aaa")
+				.style("opacity",sizes[category]["opacity"]);
+				// if(alternateSign === -1) {
+				// 	alternateSign = 1;
+				// } else {
+				// 	alternateSign = -1;
+				// }
+				// var yPositionText = height1 - Math.max(2*scaledRadius,50) + 20;
+				var yPositionText = height1 - 230;
+				svg1.append("text").text(sizes[category]["title"])
+				// svg1.append("text").text(category)
+				.attr("x", cumulativeWidth)
+				.attr("y", yPositionText+alternateSign*20)
+				.attr("width", 30)
+				.attr("text-anchor","middle")
+				.attr("alignment-baseline","middle")
+				.style("fill","white")
+				.style("opacity",sizes[category]["opacity"]);
+				// .attr("dx", "-.8em")
+	            // .attr("dy", "15px")
+	            // .attr("transform", "rotate(-65)");
+
+
+	            svg1.append("text").text(sizes[category]["size"])
+				.attr("x", cumulativeWidth-0)
+				.attr("y", yPositionText)
+				.attr("width", 30)
+				.attr("text-anchor","middle")
+				.attr("alignment-baseline","middle")
+				.style("fill","white")
+				.style("opacity",sizes[category]["opacity"]);
+			};
+		});
+
+		var widthText1 = "15%";
+		var heightText1 = 300;
+
+		/*var description1 = d3.select("#vis1").append("div")
+			.attr("class","description-right")
+			.style("width",widthText1)
+			.style("height",heightText1)
+			.text("Of all the species");*/
+		</script>
+
+	<!-- Visualization 2 -->
+		<h2>
+			<b>Where</b> is the problem?
+		</h2>
+		<p>Biodiversity in each region, refers to the variety and variability of the occupant species that promote mutual survival. It is not distributed evenly on Earth.  The richness is clustered around hotspots in each of the three biomes (Terrestrial, Marine and Freshwater).  Each successive year, we add more and more of these occupant species to the threatened species list, as we fight to maintain the fine balance of biodiversity in these biomes. IUCN defines threatened species as those that are categorized as being "Critically endangered" (CR), "Endangered" (EN) or "Vulnerable" (VU). Without adequate conservation efforts, these species may become extinct in the near future. The following graph shows the country-wise distribution of the total number of endangered species across the globe.</p>
+		<br/>
+		<div id="vis2"></div>
+
+		<script>
+
+		var codes = {};
+
+		codeISO.forEach(function (code) {
+			codes[code.alpha2] = parseInt(code.countrycode);
+		});
+
+		console.log(codes);
+
+		var height = 870;
+		var width = 960;
+
+		var svg = d3.select("#vis2").append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+		var height = svg.attr("height");
+		var width = svg.attr("width"); 
+
+		var projection = d3.geo.mercator()    
+    	.translate([width / 2, height / 2 + 50])
+    	.precision(.1);
+		var path = d3.geo.path().projection(projection);
+
+		var g = svg.append("g").attr("transform", "translate(0,35)");
+
+		var worldObjects;
+
+		var countScale = d3.scale.quantile().domain([0, 500, 2000]).range(['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']);
+
+		d3.json("data/world-50m.json", function(error, world) {
+			worldObjects = world;
+
+			if (error) { console.log(error); }
+			
+			var cc = topojson.feature(world, world.objects.countries).features;
+			
+			cc.forEach(function (country) {
+				if(country.id != '36' ){
+					g.append("path").attr("d", path(country))
+					.attr("class", "country")
+					.attr("id", 'id' + country.id)
+					.style("fill", "#ccc");
+				}
+			});
+
+			countries.forEach(function (country) {
+				var alpha = country.country;
+				var code = codes[alpha];
+				var id = '#id' + code
+
+				d3.select(id).style("fill", countScale(country.count));
+				if(code == '706'){
+					d3.selectAll('#id-99').style("fill", countScale(country.count));
+				}
+			});
+
+		});
+
+			var legend = svg.selectAll(".legend")
+			      .data([0].concat(countScale.quantiles()), function(d) { return d; })
+			      .enter().append("g")
+			      .attr("class", "legend")
+			      .attr("transform", function(d, i) { return "translate(" + ((60 * i)+200) + ", 20)"; });
+
+			legend.append("rect")
+			      .attr("x", 0)
+			      .attr("width", 60)
+			      .attr("height", 18)
+			      .style("fill", countScale);
+
+			legend.append("text")
+			      .attr("class", "legendText")
+			      .attr("x", 0)
+			      .attr("y", 30)
+			      .attr("dy", ".35em")
+			      .style("text-anchor", "start")
+			      .text(function(d) { return "> " + Math.round(d); });
+
+			svg.append("text")
+		          .text("Number of species ")
+		          .attr("x", width/2)
+		          .attr("y", 10)
+		          .style("text-anchor", "middle")
+		          .style("fill", "white");
+
+		</script>
+
+	<!-- Visualization 3 -->
+		<h2>
+			<b>What</b> are the problems?
+		</h2>
+		<p>Each biome is composed of a variety of habitats which these species call home. Ranging from natural environments like forests, rocky areas, wetlands, oceanic and coastal areas to artificially introduced Ecozones, each habitat has its share of species that are declared as threatened. Not unlike the uneven distribution of biodiversity, the distribution of the total number of threatened species in the constituent habitats is also highly uneven. Being the top habitat among all the environments, forests house more species than other habitats. The graph below shows that biodiversity in this popular habitat is highly endangered </p>
+		<div id="vis3"> </div>
+		<script>
+		var margin = {top: 20, right: 20, bottom: 75, left: 40},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+
+		var x = d3.scale.ordinal()
+		    .rangeRoundBands([0, width], .1);
+
+		var y = d3.scale.linear()
+		    .rangeRound([height, 0]);
+
+		var color = d3.scale.ordinal()
+			.range(["#800026", "#FC4E2A", "#FD8D3C"]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left")
+		    .tickFormat(d3.format("s"));
+
+		var svg3 = d3.select("#vis3").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		  d3.json("data/habitat.json", function(error, data){
+		  if (error) throw error;
+
+		  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Habitat"; }));
+
+		  data.forEach(function(d) {
+		    var y0 = 0;
+		    d.categories = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+		    d.total = d.categories[d.categories.length - 1].y1;
+		  });
+
+		  x.domain(data.map(function(d) { return d.Habitat; }));
+		  y.domain([0, d3.max(data, function(d) { return d.total+1000; })]);
+
+		  svg3.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis)
+		      .selectAll("text")
+		      .style("text-anchor","end")
+		      .attr("dx", "-0.8em")
+		      .attr("dy","0.05em")
+		      .attr("transform", "rotate(-65)")
+
+		      .call(wrap, x.rangeBand());
+
+		  svg3.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis);
+
+		  var habitat = svg3.selectAll(".habitat")
+		      .data(data)
+		      .enter().append("g")
+		      .attr("class", "g")
+		      .attr("transform", function(d) { return "translate(" + x(d.Habitat) + ",0)"; });
+
+		  habitat.selectAll("rect")
+		      .data(function(d) { return d.categories; })
+		    .enter().append("rect")
+		      .attr("width", x.rangeBand())
+		      .attr("y", function(d) { return y(d.y1); })
+		      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+		      .style("fill", function(d) { return color(d.name); });
+
+		  var legend = svg3.selectAll(".legend")
+		      .data(color.domain().slice().reverse())
+		      .enter().append("g")
+		      .attr("class", "legend")
+		      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+		  legend.append("rect")
+		      .attr("x", width - 18)
+		      .attr("width", 18)
+		      .attr("height", 18)
+		      .style("fill", color);
+
+		  legend.append("text")
+		      .attr("class", "legendText")
+		      .attr("x", width - 24)
+		      .attr("y", 9)
+		      .attr("dy", ".35em")
+		      .style("text-anchor", "end")
+		      .text(function(d) { return d; });
+
+		});
+
+		function wrap(text, width) {
+		    text.each(function() {
+		      var text = d3.select(this),
+		        words = text.text().split(/\s+/).reverse(),
+		        word,
+		        line = [],
+		        lineNumber = 0,
+		        lineHeight = 1, // ems
+		        y = text.attr("y"),
+		        dy = parseFloat(text.attr("dy")),
+		        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+		    
+		      while (word = words.pop()) {
+		      line.push(word);
+		      tspan.text(line.join(""));
+		      
+		      if (tspan.node().getComputedTextLength() > width) {
+		        line.pop();
+		        tspan.text(line.join(""));
+		        line = [word];
+		        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+		      }
+		    }
+		    })
+		  };
+		</script>
+
+	<!-- Visualization 4 -->
+		<p>Each species is declared to be threatened based on a number of reasons - from natural events like earthquakes & volcanic eruptions, to human intrusions for commercial and residential development, and energy production, to entirely heinous criminal activities like illegal trading, poaching etc. A look at the graph below suggests where we can focus our efforts to help minimize the perils of losing the biodiversity on our planet</p>
+		<div id="vis4"> </div>
+		<script>
+		var margin = {top: 20, right: 20, bottom: 90, left: 40};
+		var width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+
+		var x = d3.scale.ordinal()
+		    .rangeRoundBands([0, width], .1);
+
+		var y = d3.scale.linear()
+		    .rangeRound([height, 0]);
+
+		var color = d3.scale.ordinal()
+		    .range(["#9a2107", "#e65c3e", "#ffd996"]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left")
+		    .tickFormat(d3.format("s"));
+
+		var svg4 = d3.select("#vis4").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		  d3.json("data/threat.json", function(error, data){
+		  if (error) throw error;
+
+		  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Threat"; }));
+
+		  data.forEach(function(d) {
+		    var y0 = 0;
+		    d.categories = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+		    d.total = d.categories[d.categories.length - 1].y1;
+		  });
+
+		  x.domain(data.map(function(d) { return d.Threat; }));
+		  y.domain([0, d3.max(data, function(d) { return d.total+1000; })]);
+
+		  svg4.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis)
+		      .selectAll("text")
+		      .style("text-anchor","end")
+		      .attr("dx", "-0.8em")
+		      .attr("dy","0.05em")
+		      .attr("transform", "rotate(-65)")
+		      //.selectAll(".tick text")
+		      .call(wrap, x.rangeBand());
+
+		  svg4.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis);
+
+		  var threat = svg4.selectAll(".threat")
+		      .data(data)
+		      .enter().append("g")
+		      .attr("class", "g")
+		      .attr("transform", function(d) { return "translate(" + x(d.Threat) + ",0)"; });
+
+		  threat.selectAll("rect")
+		      .data(function(d) { return d.categories; })
+		    .enter().append("rect")
+		      .attr("width", x.rangeBand())
+		      .attr("y", function(d) { return y(d.y1); })
+		      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+		      .style("fill", function(d) { return color(d.name); });
+
+		  var legend = svg4.selectAll(".legend")
+		      .data(color.domain().slice().reverse())
+		    .enter().append("g")
+		      .attr("class", "legend")
+		      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+		  legend.append("rect")
+		      .attr("x", width - 18)
+		      .attr("width", 18)
+		      .attr("height", 18)
+		      .style("fill", color);
+
+		  legend.append("text")
+		  	  .attr("class", "legendText")
+		      .attr("x", width - 24)
+		      .attr("y", 9)
+		      .attr("dy", ".35em")
+		      .style("text-anchor", "end")
+		      .text(function(d) { return d; });
+
+		  
+		});
+		</script>
+
+	<!-- Visualization 5 -->
+		<h2>
+			<b>How</b> do they relate to each other?
+		</h2>
+		<p>We have miles to go before we could balance the tipping scales of biodiversity. However, the first step in this long and arduous journey lies in understanding where our actions can bring about the most difference. The heat map below shows the total number of species that are endangered by potential threats in each habitat category as identified by IUCN</p>
+		<div id="vis5">		
+			<div id="chart"></div>
+	    </div>
+
+	    <script type="text/javascript">
+		      	var margin = { top: 150, right: 0, bottom: 100, left: 250 },
+		          width = 960 - margin.left - margin.right,
+		          heightHeat = 630 - margin.top - margin.bottom,
+		          gridSize = Math.floor(width / 24),
+		          legendElementWidth = gridSize*2,
+		          buckets = 9,
+		          colors = ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"], // alternatively colorbrewer.YlGnBu[9]
+		          habitats = ["Forest", "Savanna", "Shrublands", "Grassland", "Wetlands", "Rockylands", "Caves", "Deserts", "Neritic", "Oceanic", "Deep Benthic", "Intertidal", "Coastal", "Artificial Terrestrial", "Artificial Marine", "Introduced Vegetation", "Other", "Unknown"],
+		          threats = ["Residential / Commercial", "Agriculture / Aquaculture", "Energy Production / Mining", "Transportation / Service Corridors", "Biological Resource Use", "Human Intrusion", "Natural System Modification", "Invasive Species", "Pollution", "Geological events", "Climate Change", "Other"],
+		          datasets = ["data/threatHabitat.json"];
+
+		      	var svg = d3.select("#chart").append("svg")
+		          .attr("width", width + margin.left + margin.right)
+		          .attr("height", heightHeat + margin.top + margin.bottom)
+		          .append("g")
+		          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	            var threatLabels = svg.selectAll(".threatLabel")
+	            .data(threats)
+	            .enter().append("text")
+	              .text(function (d) { return d; })
+	              .attr("x", 0)
+	              .attr("y", function (d, i) { return i * gridSize; })
+	              .style("text-anchor", "end")
+	              .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+	              .attr("class", "threatLabel mono");
+
+	            var habitatLabels = svg.selectAll(".habitatLabel")
+	            .data(habitats)
+	            .enter().append("text")
+	              .text(function(d) { return d; })
+	              .attr("x", function(d, i) { return i * gridSize; })
+	              .attr("y", 0)
+	              .attr("transform", function(d, i) { return "translate(" + gridSize / 2 + ", -6) rotate(-65 "+ i * gridSize  +",0)"; })
+	              .style("text-anchor", "start")
+		              .attr("class", "habitatLabel mono");
+
+		      	var heatmapChart = function(file) {
+		        d3.json(file, function(error, data) {
+		          var max = 0
+
+		          var dataJson = [];
+
+		          for(var habitat in data){
+		            for(var threat in data[habitat]){
+		              if(data[habitat][threat] > max){
+		                max = data[habitat][threat];
+		              }
+		              var instance = {'habitat': habitat, 'threat': threat, 'count': data[habitat][threat]}
+		              dataJson.push(instance);
+		            }
+		          }
+
+		          console.log(dataJson);
+
+		          var colorScale = d3.scale.quantile()
+		              .domain([0, Math.log(max/2), Math.log(max)])
+		              .range(colors);
+
+		          var cards = svg.selectAll(".hour")
+		              .data(dataJson, function(d) {
+		                            return d.threat+':'+d.habitat;
+		                          });
+
+		          cards.append("title");
+
+		          cards.enter().append("rect")
+		              .attr("x", function(d) { return (d.habitat - 1) * gridSize; })
+		              .attr("y", function(d) { return (d.threat - 1) * gridSize; })
+		              .attr("rx", 15)
+		              .attr("ry", 15)
+		              .attr("class", "hour bordered")
+		              .attr("width", gridSize)
+		              .attr("height", gridSize)
+		              .style("fill", colors[0]);
+
+		          cards.transition().duration(1000)
+		              .style("fill", function(d) { return colorScale(Math.log(d.count)); });
+
+		          cards.select("title").text(function(d) { return d.count; });
+		          
+		          cards.exit().remove();
+
+		          var legend = svg.selectAll(".legend")
+		              .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+
+		          legend.enter().append("g")
+		              .attr("class", "legend");
+
+		          legend.append("rect")
+		            .attr("x", function(d, i) { return legendElementWidth * i; })
+		            .attr("y", height)
+		            .attr("width", legendElementWidth)
+		            .attr("height", gridSize / 2)
+		            .style("fill", function(d, i) { return colors[i]; });
+
+		          legend.append("text")
+		            .attr("class", "mono")
+		            .text(function(d) { return "> " + Math.round(Math.exp(d)); })
+		            .attr("x", function(d, i) { return legendElementWidth * i; })
+		            .attr("y", height + gridSize); 
+
+		          svg.append("text")
+		          .text("Number of species ")
+		          .attr("x", -10)
+		          .attr("y", height + gridSize/4)
+		          .style("text-anchor", "end")
+		          .style("alignment-baseline", "middle")
+		          .style("fill", "white");
+
+		        });  
+		      };
+
+		      heatmapChart(datasets[0]);      
+	    </script>
+	    <h2>
+			What we <b> learnt</b>
+		</h2>
+		<p>One would normally expect the largest threat to be something like Pollution or Climate change, but we found that the largest causes are <b>Agriculture/Aquaculture</b> and <b>Biological Resource Use</b>.
+		We believe that the world's governments should direct their attention towards issues like <i>Illegal trade of Wildlife, Hunting and Poaching, Overfishing and improving Agricultural Methods.</i>
+		</p>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+/* Common */
+/*body { font-family: "Open Sans"; }*/
+* {
+	-webkit-box-sizing: border-box;
+}
+body { font-family: "Lato"; background-color: rgb(64,64,64); color: white;
+	/*background: rgb(0,0,0);*/
+	
+	background-image: url("background.jpg");
+	background-size: cover;
+	background-position: bottom center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	padding: 0;
+	margin: 0;
+	overflow-x: hidden;
+}
+
+.blur {
+	-webkit-filter: blur(5px);
+  	-moz-filter: blur(5px);
+  	-o-filter: blur(5px);
+  	-ms-filter: blur(5px);
+  	filter: blur(5px);
+}
+#main{
+	margin: 0 auto;
+	width: 100%;
+	background-color: rgba(23,23,23,0.95);
+	padding: 2% 10%;
+}
+#main p {
+	font-weight: 300;
+	text-align: justify;
+    text-justify: inter-word;
+    line-height: 21px;
+}
+
+/* Visualization 1 */
+circle{  }
+text { font-size: 10pt; }
+.title { font-size: 15pt; font-weight: 100; text-transform: lowercase; }
+#vis1 { margin: 0 auto; width: 960px; height: 350px; position: relative;}
+.container {}
+
+h1 { text-align: center; }
+h2 { text-align: center; padding-left: 30px; font-weight: 200; padding-top: 20px; padding-bottom: 20px; }
+.description-right { border: 1px solid #666; float: right; padding: 10px; }
+.description-left { border: 1px solid #666; float: left; padding: 10px; margin: 10px; bottom: 0; }
+
+/* Visualization 2 */
+.axis path {fill: none; stroke: white;}
+.axis line {stroke: white;}
+.axis text {fill: white; font-size: .7em;}
+
+.axis3 path {fill: none; stroke: black;}
+.axis3 line {stroke: black;}
+.axis3 text {fill: grey; font-size: .7em; }
+
+path.outline { fill: none; stroke-width: 5; stroke: red; opacity: 0.25}
+
+/*circle{opacity: 0.6}*/
+#vis3 rect, #vis4 rect {opacity: 0.8}
+
+.map{opacity: 1; fill: tomato; }
+
+#vis1, #vis2, #vis3, #vis4, #vis5 {
+	position: relative;
+	margin: 0 auto;
+	text-align: center
+}
+
+/* Visualization 3 & 4 */
+.legendText{fill: white;}
+
+/* Visualization 5 */
+
+rect.bordered {
+	stroke: #000;
+	stroke-width: 1px; 
+}
+
+text.mono {
+	font-size: 9pt;
+	font-family: 'Open Sans';
+	fill: #fff;
+}
